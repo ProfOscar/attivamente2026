@@ -1,4 +1,6 @@
-﻿char scelta;
+﻿using AttivaMente.Core.Models;
+
+char scelta;
 do
 {
     Console.Clear();
@@ -19,9 +21,7 @@ do
             Console.ReadKey();
             break;
         case '2':
-            Console.Clear();
-            Console.WriteLine("Hai scelto 2");
-            Console.ReadKey();
+            ListaUtenti();
             break;
         case 'q':
         case 'Q':
@@ -32,3 +32,36 @@ do
             break;
     }
 } while (scelta.ToString().ToLower() != "q");
+
+void ListaUtenti()
+{
+    Console.Clear();
+
+    List<Utente> utenti = new List<Utente>();
+
+    var u = new Utente()
+    {
+        Id = 1,
+        Nome = "Giuseppe",
+        Cognome = "Garibaldi",
+        Email = "g.garibaldi@italia.com",
+    };
+    utenti.Add(u);
+
+    u = new Utente()
+    {
+        Id = 2,
+        Nome = "Camillo",
+        Cognome = "Cavour",
+        Email = "camillo@savoia.it"
+    };
+    utenti.Add(u);
+
+    Console.WriteLine("Lista Utenti:");
+    foreach (var utente in utenti)
+    {
+        Console.WriteLine($"{utente.Nome} {utente.Cognome} - {utente.Email}");
+    }
+
+    Console.ReadKey();
+}
