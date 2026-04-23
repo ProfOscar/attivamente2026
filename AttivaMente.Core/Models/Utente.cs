@@ -13,7 +13,7 @@
 
         public override string ToString()
         {
-            return $"{Nome} {Cognome} - {Email}";
+            return $"{Nome} {Cognome} - {Email} - {Ruolo}";
         }
     }
 }

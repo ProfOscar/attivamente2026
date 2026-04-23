@@ -1,4 +1,5 @@
 ﻿using AttivaMente.Core.Models;
+using Microsoft.Data.SqlClient;
 
 char scelta;
 do
@@ -39,23 +40,7 @@ void ListaUtenti()
 
     List<Utente> utenti = new List<Utente>();
 
-    var u = new Utente()
-    {
-        Id = 1,
-        Nome = "Giuseppe",
-        Cognome = "Garibaldi",
-        Email = "g.garibaldi@italia.com",
-    };
-    utenti.Add(u);
-
-    u = new Utente()
-    {
-        Id = 2,
-        Nome = "Camillo",
-        Cognome = "Cavour",
-        Email = "camillo@savoia.it"
-    };
-    utenti.Add(u);
+    CaricaUtentiDaDB(utenti);
 
     Console.WriteLine("Lista Utenti:");
     foreach (var utente in utenti)
@@ -64,4 +49,36 @@ void ListaUtenti()
     }
 
     Console.ReadKey();
+}
+
+void CaricaUtentiDaDB(List<Utente> utenti)
+{
+    string connStr = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\oscar.cambieri\\Desktop\\attivamente2026\\AttivaMente.Data\\AttivaMenteDB.mdf;Integrated Security=True;Connect Timeout=30";
+    using (SqlConnection connection = new SqlConnection(connStr))
+    {
+        connection.Open();
+        string query = "SELECT * FROM Utenti";
+        using (SqlCommand command = new SqlCommand(query, connection))
+        {
+            using (SqlDataReader reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    string nome = reader[1].ToString();
+                    string cognome = reader[2].ToString();
+                    string email = reader[3].ToString();
+                    string pwHash = reader[4].ToString();
+                    Utente utente = new Utente()
+                    {
+                        Nome = nome,
+                        Cognome = cognome,
+                        Email = email,
+                        PasswordHash = pwHash
+                    };
+                    utenti.Add(utente);
+                }
+            }
+        }
+        connection.Close();
+    }
 }
