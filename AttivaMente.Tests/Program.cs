@@ -60,7 +60,7 @@ void ListaUtenti()
     Console.WriteLine("Lista Utenti:");
     foreach (var utente in utenti)
     {
-        Console.WriteLine($"{utente.Nome} {utente.Cognome} - {utente.Email}");
+        Console.WriteLine(utente);
     }
 
     Console.ReadKey();

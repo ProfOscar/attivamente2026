@@ -7,5 +7,13 @@
         public string Cognome { get; set; }
         public string Email { get; set; }
         public string PasswordHash { get; set; }
+        public int RuoloId { get; set; }
+        public Ruolo Ruolo { get; set; }
+
+
+        public override string ToString()
+        {
+            return $"{Nome} {Cognome} - {Email}";
+        }
     }
 }
