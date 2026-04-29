@@ -1,5 +1,7 @@
 ﻿using AttivaMente.Core.Models;
+using AttivaMente.Data;
 using Microsoft.Data.SqlClient;
+using System.ComponentModel.DataAnnotations.Schema;
 
 char scelta;
 do
@@ -53,32 +55,25 @@ void ListaUtenti()
 
 void CaricaUtentiDaDB(List<Utente> utenti)
 {
-    string connStr = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\oscar.cambieri\\Desktop\\attivamente2026\\AttivaMente.Data\\AttivaMenteDB.mdf;Integrated Security=True;Connect Timeout=30";
-    using (SqlConnection connection = new SqlConnection(connStr))
+    string connStr = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Dati\\AttivaMenteDB.mdf;Integrated Security=True;Connect Timeout=30";
+    Database db = new Database(connStr);
+
+    using (SqlDataReader reader = db.ExecuteReader("SELECT * FROM Utenti"))
     {
-        connection.Open();
-        string query = "SELECT * FROM Utenti";
-        using (SqlCommand command = new SqlCommand(query, connection))
+        while (reader.Read())
         {
-            using (SqlDataReader reader = command.ExecuteReader())
+            string nome = reader[1].ToString();
+            string cognome = reader[2].ToString();
+            string email = reader[3].ToString();
+            string pwHash = reader[4].ToString();
+            Utente utente = new Utente()
             {
-                while (reader.Read())
-                {
-                    string nome = reader[1].ToString();
-                    string cognome = reader[2].ToString();
-                    string email = reader[3].ToString();
-                    string pwHash = reader[4].ToString();
-                    Utente utente = new Utente()
-                    {
-                        Nome = nome,
-                        Cognome = cognome,
-                        Email = email,
-                        PasswordHash = pwHash
-                    };
-                    utenti.Add(utente);
-                }
-            }
+                Nome = nome,
+                Cognome = cognome,
+                Email = email,
+                PasswordHash = pwHash
+            };
+            utenti.Add(utente);
         }
-        connection.Close();
     }
 }
