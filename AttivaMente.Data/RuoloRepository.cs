@@ -25,5 +25,30 @@ namespace AttivaMente.Data
             }
             return ruoli;
         }
+
+        public Ruolo? GetById(int id)
+        {
+            using var reader = _db.ExecuteReader($"SELECT Id, Nome FROM Ruoli WHERE Id={id}");
+            if (reader.Read())
+            {
+                return new Ruolo
+                {
+                    Id = reader.GetInt32(0),
+                    Nome = reader.GetString(1)
+                };
+            }
+            return null;
+        }
+
+        public int Add(string nomeRuolo)
+        {
+            return _db.ExecuteNonQuery($"INSERT INTO Ruoli (Nome) VALUES ('{nomeRuolo}')");
+        }
+
+        public int Delete(int id)
+        {
+            return _db.ExecuteNonQuery($"DELETE FROM Ruoli WHERE Id={id}");
+        }
+
     }
 }
