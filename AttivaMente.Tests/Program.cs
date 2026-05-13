@@ -1,7 +1,10 @@
 ﻿using AttivaMente.Core.Models;
 using AttivaMente.Data;
-using Microsoft.Data.SqlClient;
-using System.ComponentModel.DataAnnotations.Schema;
+
+string connStr = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Dati\\AttivaMenteDB.mdf;Integrated Security=True;Connect Timeout=30";
+
+UtenteRepository utenteRepository = new UtenteRepository(connStr);
+RuoloRepository ruoloRepository = new RuoloRepository(connStr);
 
 char scelta;
 do
@@ -19,9 +22,7 @@ do
     switch (scelta)
     {
         case '1':
-            Console.Clear();
-            Console.WriteLine("Hai scelto 1");
-            Console.ReadKey();
+            ListaRuoli();
             break;
         case '2':
             ListaUtenti();
@@ -36,13 +37,26 @@ do
     }
 } while (scelta.ToString().ToLower() != "q");
 
+void ListaRuoli()
+{
+    Console.Clear();
+
+    List<Ruolo> ruoli = ruoloRepository.GetAll();
+
+    Console.WriteLine("Lista Ruoli:");
+    foreach (var ruolo in ruoli)
+    {
+        Console.WriteLine(ruolo);
+    }
+
+    Console.ReadKey();
+}
+
 void ListaUtenti()
 {
     Console.Clear();
 
-    List<Utente> utenti = new List<Utente>();
-
-    CaricaUtentiDaDB(utenti);
+    List<Utente> utenti = utenteRepository.GetAll();
 
     Console.WriteLine("Lista Utenti:");
     foreach (var utente in utenti)
@@ -53,27 +67,3 @@ void ListaUtenti()
     Console.ReadKey();
 }
 
-void CaricaUtentiDaDB(List<Utente> utenti)
-{
-    string connStr = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Dati\\AttivaMenteDB.mdf;Integrated Security=True;Connect Timeout=30";
-    Database db = new Database(connStr);
-
-    using (SqlDataReader reader = db.ExecuteReader("SELECT * FROM Utenti"))
-    {
-        while (reader.Read())
-        {
-            string nome = reader[1].ToString();
-            string cognome = reader[2].ToString();
-            string email = reader[3].ToString();
-            string pwHash = reader[4].ToString();
-            Utente utente = new Utente()
-            {
-                Nome = nome,
-                Cognome = cognome,
-                Email = email,
-                PasswordHash = pwHash
-            };
-            utenti.Add(utente);
-        }
-    }
-}
