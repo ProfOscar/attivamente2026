@@ -11,10 +11,16 @@ do
 {
     Console.Clear();
 
-    Console.WriteLine("--- AttivaMente - Funzionalità di Test ---");
-    Console.WriteLine("\n1) Lista Ruoli");
-    Console.WriteLine("2) Lista Utenti");
-    Console.WriteLine("\nq) ESCI");
+    Console.WriteLine("--- AttivaMente - Funzionalità di Test ---\n");
+    Console.WriteLine("1) Lista Utenti");
+    Console.WriteLine("2) Ricerca utente per ID");
+    Console.WriteLine("3) Nuovo utente");
+    Console.WriteLine("4) Modifica utente");
+    Console.WriteLine("5) Cancelazione utente");
+    Console.WriteLine("----------");
+    Console.WriteLine("6) Lista Ruoli");
+    Console.WriteLine("----------");
+    Console.WriteLine("q) ESCI");
 
     Console.Write("\nScegli la funzione: ");
     scelta = Console.ReadKey().KeyChar;
@@ -22,10 +28,13 @@ do
     switch (scelta)
     {
         case '1':
-            ListaRuoli();
+            ListaUtenti();
             break;
         case '2':
-            ListaUtenti();
+            RicercaUtente();
+            break;
+        case '6':
+            ListaRuoli();
             break;
         case 'q':
         case 'Q':
@@ -37,17 +46,16 @@ do
     }
 } while (scelta.ToString().ToLower() != "q");
 
-void ListaRuoli()
+void RicercaUtente()
 {
     Console.Clear();
-
-    List<Ruolo> ruoli = ruoloRepository.GetAll();
-
-    Console.WriteLine("Lista Ruoli:");
-    foreach (var ruolo in ruoli)
-    {
-        Console.WriteLine(ruolo);
-    }
+    Console.Write("Inserisci l'ID dell'utente da cercare: ");
+    int id = int.Parse(Console.ReadLine()!);
+    Utente? utente = utenteRepository.GetById(id);
+    if (utente == null)
+        Console.WriteLine("Utente non trovato");
+    else
+        Console.WriteLine(utente);
 
     Console.ReadKey();
 }
@@ -62,6 +70,21 @@ void ListaUtenti()
     foreach (var utente in utenti)
     {
         Console.WriteLine(utente);
+    }
+
+    Console.ReadKey();
+}
+
+void ListaRuoli()
+{
+    Console.Clear();
+
+    List<Ruolo> ruoli = ruoloRepository.GetAll();
+
+    Console.WriteLine("Lista Ruoli:");
+    foreach (var ruolo in ruoli)
+    {
+        Console.WriteLine(ruolo);
     }
 
     Console.ReadKey();
