@@ -1,4 +1,5 @@
 ﻿using AttivaMente.Core.Models;
+using AttivaMente.Core.Security;
 using AttivaMente.Data;
 
 string connStr = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Dati\\AttivaMenteDB.mdf;Integrated Security=True;Connect Timeout=30";
@@ -16,9 +17,13 @@ do
     Console.WriteLine("2) Ricerca utente per ID");
     Console.WriteLine("3) Nuovo utente");
     Console.WriteLine("4) Modifica utente");
-    Console.WriteLine("5) Cancelazione utente");
+    Console.WriteLine("5) Cancellazione utente");
     Console.WriteLine("----------");
     Console.WriteLine("6) Lista Ruoli");
+    Console.WriteLine("7) Ricerca ruolo per ID");
+    Console.WriteLine("8) Nuovo ruolo");
+    Console.WriteLine("9) Modifica ruolo");
+    Console.WriteLine("0) Cancellazione ruolo");
     Console.WriteLine("----------");
     Console.WriteLine("q) ESCI");
 
@@ -33,8 +38,20 @@ do
         case '2':
             RicercaUtente();
             break;
+        case '3':
+            NuovoOrModificaUtente(false);
+            break;
+        case '4':
+            NuovoOrModificaUtente(true);
+            break;
         case '6':
             ListaRuoli();
+            break;
+        case '7':
+            RicercaRuolo();
+            break;
+        case '8':
+            NuovoRuolo();
             break;
         case 'q':
         case 'Q':
@@ -46,11 +63,124 @@ do
     }
 } while (scelta.ToString().ToLower() != "q");
 
+void NuovoRuolo()
+{
+    Console.Clear();
+    Console.WriteLine("NUOVO RUOLO\n");
+    Console.Write("Nome: "); string? nome = Console.ReadLine();
+
+    if (string.IsNullOrEmpty(nome))
+    {
+        Console.WriteLine("Dati non corretti, riprova...");
+        Console.ReadKey();
+        return;
+    }
+
+    var nuovoRuolo = new Ruolo { Nome = nome, };
+    if (ruoloRepository.Add(nuovoRuolo))
+        Console.WriteLine("Ruolo aggiunto correttamente");
+    else
+        Console.WriteLine("Errore nell'aggiunta del nuovo ruolo");
+
+    Console.ReadKey();
+}
+
+void NuovoOrModificaUtente(bool isModifica)
+{
+    Console.Clear();
+
+    Console.WriteLine(isModifica ? "MODIFICA UTENTE\n" : "NUOVO UTENTE\n");
+
+    int id = 0;
+    if (isModifica)
+    {
+        do
+        {
+            Console.Write("Inserisci l'ID dell'utente da modificare: ");
+        }
+        while (!int.TryParse(Console.ReadLine(), out id));
+
+        Utente? u = utenteRepository.GetById(id);
+        if (u == null)
+        {
+            Console.WriteLine("Utente non trovato!");
+            return;
+        }
+
+        Console.WriteLine($"Dati da modificare: {u}");
+    }
+
+    Console.Write("Nome: "); string? nome = Console.ReadLine();
+    Console.Write("Cognome: "); string? cognome = Console.ReadLine();
+    Console.Write("Email: "); string? email = Console.ReadLine();
+    Console.Write("Password: "); string? password = Console.ReadLine();
+    int ruoloId;
+    do
+    {
+        Console.Write("ID ruolo: ");
+    }
+    while (!int.TryParse(Console.ReadLine(), out ruoloId));
+
+    if (string.IsNullOrEmpty(nome) || string.IsNullOrEmpty(cognome) || string.IsNullOrEmpty(email)
+        || string.IsNullOrEmpty(password) || ruoloId < 1)
+    {
+        Console.WriteLine("Dati non corretti, riprova...");
+        Console.ReadKey();
+        return;
+    }
+
+    var utente = new Utente
+    {
+        Nome = nome,
+        Cognome = cognome,
+        Email = email,
+        PasswordHash = PasswordHelper.HashPassword(password),
+        RuoloId = ruoloId,
+    };
+
+    bool retVal = isModifica ? 
+        utenteRepository.Update(utente, id) : 
+        utenteRepository.Add(utente);
+
+    if (retVal)
+        Console.WriteLine("Utente aggiunto o modificato correttamente");
+    else
+        Console.WriteLine("Errore nell'aggiunta o modifica del nuovo utente");
+
+    Console.ReadKey();
+}
+
+void RicercaRuolo()
+{
+    Console.Clear();
+
+    int id;
+    do
+    {
+        Console.Write("Inserisci l'ID del ruolo da cercare: ");
+    }
+    while (!int.TryParse(Console.ReadLine(), out id));
+
+    Ruolo? ruolo = ruoloRepository.GetById(id);
+    if (ruolo == null)
+        Console.WriteLine("Ruolo non trovato");
+    else
+        Console.WriteLine(ruolo);
+
+    Console.ReadKey();
+}
+
 void RicercaUtente()
 {
     Console.Clear();
-    Console.Write("Inserisci l'ID dell'utente da cercare: ");
-    int id = int.Parse(Console.ReadLine()!);
+
+    int id;
+    do
+    {
+        Console.Write("Inserisci l'ID dell'utente da cercare: ");
+    }
+    while (!int.TryParse(Console.ReadLine(), out id));
+
     Utente? utente = utenteRepository.GetById(id);
     if (utente == null)
         Console.WriteLine("Utente non trovato");

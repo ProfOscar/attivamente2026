@@ -29,5 +29,49 @@ namespace AttivaMente.Data
 
             return ruoli;
         }
+
+        public Ruolo? GetById(int id)
+        {
+            string query = $"SELECT Id, Nome FROM Ruoli WHERE Id={id}";
+
+            using var reader = _db.ExecuteReader(query);
+            if (reader.Read())
+            {
+                var ruolo = new Ruolo
+                {
+                    Id = reader.GetInt32(0),
+                    Nome = reader.GetString(1),
+                };
+                return ruolo;
+            }
+
+            return null;
+        }
+
+        public bool Add(Ruolo r)
+        {
+            string sql = @$"INSERT INTO Ruoli (Nome) VALUES ('{r.Nome}')";
+            return CallExecuteNonQuery(sql);
+        }
+
+        public bool Update(Utente u, int id)
+        {
+            string sql = $"UPDATE Ruoli SET Nome = '{u.Nome}' WHERE Id = {id}";
+            return CallExecuteNonQuery(sql);
+        }
+
+        private bool CallExecuteNonQuery(string sql)
+        {
+            try
+            {
+                int retVal = _db.ExecuteNonQuery(sql);
+                return retVal == 1; // ritorno true solo se è stato inserito 1 record
+            }
+            catch (Exception exc)
+            {
+                Console.WriteLine(exc.Message);
+                return false;
+            }
+        }
     }
 }

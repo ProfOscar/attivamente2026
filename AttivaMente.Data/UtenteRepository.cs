@@ -54,5 +54,35 @@ namespace AttivaMente.Data
 
             return null;
         }
+
+        public bool Add(Utente u)
+        {
+            string sql = @$"INSERT INTO Utenti (Nome, Cognome, Email, PasswordHash, RuoloId) 
+                    VALUES ('{u.Nome}', '{u.Cognome}', '{u.Email}', '{u.PasswordHash}', {u.RuoloId})";
+            return CallExecuteNonQuery(sql);
+        }
+
+        public bool Update(Utente u, int id)
+        {
+            string sql = @$"UPDATE Utenti SET 
+                    Nome = '{u.Nome}', Cognome = '{u.Cognome}', Email = '{u.Email}',  
+                    PasswordHash = '{u.PasswordHash}', RuoloId = {u.RuoloId} 
+                    WHERE Id = {id}";
+            return CallExecuteNonQuery(sql);
+        }
+
+        private bool CallExecuteNonQuery(string sql)
+        {
+            try
+            {
+                int retVal = _db.ExecuteNonQuery(sql);
+                return retVal == 1; // ritorno true solo se è stato inserito 1 record
+            }
+            catch (Exception exc)
+            {
+                Console.WriteLine(exc.Message);
+                return false;
+            }
+        }
     }
 }
