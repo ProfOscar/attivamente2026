@@ -54,9 +54,9 @@ namespace AttivaMente.Data
             return CallExecuteNonQuery(sql);
         }
 
-        public bool Update(Utente u, int id)
+        public bool Update(Ruolo r, int id)
         {
-            string sql = $"UPDATE Ruoli SET Nome = '{u.Nome}' WHERE Id = {id}";
+            string sql = $"UPDATE Ruoli SET Nome = '{r.Nome}' WHERE Id = {id}";
             return CallExecuteNonQuery(sql);
         }
 

@@ -51,7 +51,10 @@ do
             RicercaRuolo();
             break;
         case '8':
-            NuovoRuolo();
+            NuovoOrModificaRuolo(false);
+            break;
+        case '9':
+            NuovoOrModificaRuolo(true);
             break;
         case 'q':
         case 'Q':
@@ -63,10 +66,31 @@ do
     }
 } while (scelta.ToString().ToLower() != "q");
 
-void NuovoRuolo()
+void NuovoOrModificaRuolo(bool isModifica)
 {
     Console.Clear();
-    Console.WriteLine("NUOVO RUOLO\n");
+
+    Console.WriteLine(isModifica ? "MODIFICA RUOLO\n" : "NUOVO RUOLO\n");
+
+    int id = 0;
+    if (isModifica)
+    {
+        do
+        {
+            Console.Write("Inserisci l'ID del ruolo da modificare: ");
+        }
+        while (!int.TryParse(Console.ReadLine(), out id));
+
+        Ruolo? r = ruoloRepository.GetById(id);
+        if (r == null)
+        {
+            Console.WriteLine("Ruolo non trovato!");
+            return;
+        }
+
+        Console.WriteLine($"Dati da modificare: {r}");
+    }
+
     Console.Write("Nome: "); string? nome = Console.ReadLine();
 
     if (string.IsNullOrEmpty(nome))
@@ -76,11 +100,16 @@ void NuovoRuolo()
         return;
     }
 
-    var nuovoRuolo = new Ruolo { Nome = nome, };
-    if (ruoloRepository.Add(nuovoRuolo))
-        Console.WriteLine("Ruolo aggiunto correttamente");
+    var ruolo = new Ruolo { Nome = nome, };
+
+    bool retVal = isModifica ?
+        ruoloRepository.Update(ruolo, id) :
+        ruoloRepository.Add(ruolo);
+
+    if (retVal)
+        Console.WriteLine("Ruolo aggiunto o modificato correttamente");
     else
-        Console.WriteLine("Errore nell'aggiunta del nuovo ruolo");
+        Console.WriteLine("Errore nell'aggiunta o modifica del ruolo");
 
     Console.ReadKey();
 }
@@ -145,7 +174,7 @@ void NuovoOrModificaUtente(bool isModifica)
     if (retVal)
         Console.WriteLine("Utente aggiunto o modificato correttamente");
     else
-        Console.WriteLine("Errore nell'aggiunta o modifica del nuovo utente");
+        Console.WriteLine("Errore nell'aggiunta o modifica dell'utente");
 
     Console.ReadKey();
 }
