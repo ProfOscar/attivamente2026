@@ -44,6 +44,9 @@ do
         case '4':
             NuovoOrModificaUtente(true);
             break;
+        case '5':
+            CancellaUtente();
+            break;
         case '6':
             ListaRuoli();
             break;
@@ -56,6 +59,9 @@ do
         case '9':
             NuovoOrModificaRuolo(true);
             break;
+        case '0':
+            CancellaRuolo();
+            break;
         case 'q':
         case 'Q':
             break;
@@ -65,6 +71,80 @@ do
             break;
     }
 } while (scelta.ToString().ToLower() != "q");
+
+void CancellaRuolo()
+{
+    Console.Clear();
+    Console.WriteLine("CANCELLA RUOLO\n");
+
+    int id;
+    do
+    {
+        Console.Write("Inserisci l'ID del ruolo da cancellare: ");
+    }
+    while (!int.TryParse(Console.ReadLine(), out id));
+
+    Ruolo? r = ruoloRepository.GetById(id);
+    if (r == null)
+    {
+        Console.WriteLine("Ruolo non trovato!");
+        Console.ReadKey();
+        return;
+    }
+
+    Console.WriteLine($"Ruolo da cancellare: {r}");
+    Console.Write("Confermi la cancellazione? (s/n): ");
+    string? st = Console.ReadKey().KeyChar.ToString();
+
+    if (string.IsNullOrEmpty(st) || st.ToLower() != "s")
+        Console.WriteLine("\nCancellazione abortita");
+    else
+    {
+        if (ruoloRepository.Delete(id))
+            Console.WriteLine("\nRuolo cancellato correttamente");
+        else
+            Console.WriteLine("\nErrore nella cancellazione del ruolo");
+    }
+
+    Console.ReadKey();
+}
+
+void CancellaUtente()
+{
+    Console.Clear();
+    Console.WriteLine("CANCELLA UTENTE\n");
+
+    int id;
+    do
+    {
+        Console.Write("Inserisci l'ID dell'utente da cancellare: ");
+    }
+    while (!int.TryParse(Console.ReadLine(), out id));
+
+    Utente? u = utenteRepository.GetById(id);
+    if (u == null)
+    {
+        Console.WriteLine("Utente non trovato!");
+        Console.ReadKey();
+        return;
+    }
+
+    Console.WriteLine($"Utente da cancellare: {u}");
+    Console.Write("Confermi la cancellazione? (s/n): ");
+    string? st = Console.ReadKey().KeyChar.ToString();
+
+    if (string.IsNullOrEmpty(st) || st.ToLower() != "s")
+        Console.WriteLine("\nCancellazione abortita");
+    else
+    {
+        if (utenteRepository.Delete(id))
+            Console.WriteLine("\nUtente cancellato correttamente");
+        else
+            Console.WriteLine("\nErrore nella cancellazione dell'utente");
+    }
+
+    Console.ReadKey();
+}
 
 void NuovoOrModificaRuolo(bool isModifica)
 {
@@ -85,6 +165,7 @@ void NuovoOrModificaRuolo(bool isModifica)
         if (r == null)
         {
             Console.WriteLine("Ruolo non trovato!");
+            Console.ReadKey();
             return;
         }
 
@@ -133,6 +214,7 @@ void NuovoOrModificaUtente(bool isModifica)
         if (u == null)
         {
             Console.WriteLine("Utente non trovato!");
+            Console.ReadKey();
             return;
         }
 

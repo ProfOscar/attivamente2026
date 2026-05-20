@@ -71,6 +71,12 @@ namespace AttivaMente.Data
             return CallExecuteNonQuery(sql);
         }
 
+        public bool Delete(int id)
+        {
+            string sql = $"DELETE FROM Utenti WHERE Id = {id}";
+            return CallExecuteNonQuery(sql);
+        }
+
         private bool CallExecuteNonQuery(string sql)
         {
             try
