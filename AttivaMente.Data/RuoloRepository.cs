@@ -32,9 +32,9 @@ namespace AttivaMente.Data
 
         public Ruolo? GetById(int id)
         {
-            string query = $"SELECT Id, Nome FROM Ruoli WHERE Id={id}";
+            string query = $"SELECT Id, Nome FROM Ruoli WHERE Id = @p1";
 
-            using var reader = _db.ExecuteReader(query);
+            using var reader = _db.ExecuteReader(query, id);
             if (reader.Read())
             {
                 var ruolo = new Ruolo
@@ -50,27 +50,27 @@ namespace AttivaMente.Data
 
         public bool Add(Ruolo r)
         {
-            string sql = @$"INSERT INTO Ruoli (Nome) VALUES ('{r.Nome}')";
-            return CallExecuteNonQuery(sql);
+            string sql = @$"INSERT INTO Ruoli (Nome) VALUES (@p1)";
+            return CallExecuteNonQuery(sql, r.Nome);
         }
 
         public bool Update(Ruolo r, int id)
         {
-            string sql = $"UPDATE Ruoli SET Nome = '{r.Nome}' WHERE Id = {id}";
-            return CallExecuteNonQuery(sql);
+            string sql = $"UPDATE Ruoli SET Nome = @p1 WHERE Id = @p2";
+            return CallExecuteNonQuery(sql, r.Nome, id);
         }
 
         public bool Delete(int id)
         {
-            string sql = $"DELETE FROM Ruoli WHERE Id = {id}";
-            return CallExecuteNonQuery(sql);
+            string sql = $"DELETE FROM Ruoli WHERE Id = @p1";
+            return CallExecuteNonQuery(sql, id);
         }
 
-        private bool CallExecuteNonQuery(string sql)
+        private bool CallExecuteNonQuery(string sql, params object[] parameters)
         {
             try
             {
-                int retVal = _db.ExecuteNonQuery(sql);
+                int retVal = _db.ExecuteNonQuery(sql, parameters);
                 return retVal == 1; // ritorno true solo se è stato inserito 1 record
             }
             catch (Exception exc)

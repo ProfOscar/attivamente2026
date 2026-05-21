@@ -25,6 +25,8 @@ do
     Console.WriteLine("9) Modifica ruolo");
     Console.WriteLine("0) Cancellazione ruolo");
     Console.WriteLine("----------");
+    Console.WriteLine("a) Test SQL injection");
+    Console.WriteLine("----------");
     Console.WriteLine("q) ESCI");
 
     Console.Write("\nScegli la funzione: ");
@@ -62,6 +64,10 @@ do
         case '0':
             CancellaRuolo();
             break;
+        case 'a':
+        case 'A':
+            TestSqlInjection();
+            break;
         case 'q':
         case 'Q':
             break;
@@ -71,6 +77,22 @@ do
             break;
     }
 } while (scelta.ToString().ToLower() != "q");
+
+void TestSqlInjection()
+{
+    Console.Clear();
+
+    Console.Write("Inserisci l'email dell'utente da cercare: ");
+    string email = Console.ReadLine() ?? "";
+
+    Utente? utente = utenteRepository.GetByEmail(email);
+    if (utente == null)
+        Console.WriteLine("Utente non trovato");
+    else
+        Console.WriteLine(utente);
+
+    Console.ReadKey();
+}
 
 void CancellaRuolo()
 {
