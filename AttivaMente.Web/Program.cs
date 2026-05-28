@@ -1,20 +1,23 @@
-using AttivaMente.Core.Models;
-using AttivaMente.Core.Security;
-
+// Il builder permette di costruire la web application
 var builder = WebApplication.CreateBuilder(args);
+
+// Aggiungo i servizi per poter usare MVC
+builder.Services.AddControllersWithViews();
+
+// Costruisco la web application
 var app = builder.Build();
 
-var utente = new Utente()
-{
-    Nome = "Mario",
-    Cognome = "Rossi",
-    Email = "mario@example.com",
-    PasswordHash = PasswordHelper.HashPassword("MiaPwd50@"),
-    RuoloId = 1
-};
+// Abilito i file statici (CSS, JS, immagini, ...)
+app.UseStaticFiles();
 
-app.MapGet("/", () => "Elenco Utenti:\n" + utente);
+// Configuro routing per utilizzare i Controller e le View
+app.UseRouting();
 
-app.MapGet("admin/", () => "Admin page (login required)");
+// Imposto la route predefinita per i Controller della web application
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}"
+);
 
+// Lancio la web application
 app.Run();
