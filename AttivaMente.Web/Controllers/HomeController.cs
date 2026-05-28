@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AttivaMente.Data;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AttivaMente.Web.Controllers
 {
@@ -6,7 +7,12 @@ namespace AttivaMente.Web.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            string connStr = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Dati\\AttivaMenteDB.mdf;Integrated Security=True;Connect Timeout=30";
+
+            var utenteRepository = new UtenteRepository(connStr);
+            var utenti = utenteRepository.GetAll();
+
+            return View(utenti);
         }
     }
 }

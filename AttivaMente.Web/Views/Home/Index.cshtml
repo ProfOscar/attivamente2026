@@ -1,2 +1,13 @@
-﻿<h1>AttivaMente</h1>
-<p>Questa è l'homepage dell'applicazione</p>
+﻿@using AttivaMente.Core.Models
+@model List<Utente>
+
+<h1>AttivaMente</h1>
+<h3>Questa è l'homepage dell'applicazione</h3>
+
+<h4>ELENCO UTENTI</h4>
+<ul>
+    @foreach (var utente in Model)
+    {
+        <li>@utente</li>
+    }
+</ul>
