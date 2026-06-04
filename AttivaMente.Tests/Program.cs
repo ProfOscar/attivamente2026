@@ -29,6 +29,7 @@ do
     Console.WriteLine("----------");
     Console.WriteLine("a) Test SQL injection");
     Console.WriteLine("b) Test creazione docx utente");
+    Console.WriteLine("c) Test creazione xlsx lista utenti");
     Console.WriteLine("----------");
     Console.WriteLine("q) ESCI");
 
@@ -75,6 +76,10 @@ do
         case 'B':
             TestCreaDocxUtente();
             break;
+        case 'c':
+        case 'C':
+            TestCreaXlsxListaUtenti();
+            break;
         case 'q':
         case 'Q':
             break;
@@ -84,6 +89,23 @@ do
             break;
     }
 } while (scelta.ToString().ToLower() != "q");
+
+void TestCreaXlsxListaUtenti()
+{
+    Console.Clear();
+    List<Utente> utenti = utenteRepository.GetAll();
+    try
+    {
+        string xlsxPath = $"C:\\Dati\\ListaUtenti_{DateTime.Now.ToString("yyyyMMdd")}.xlsx";
+        ExcelAutomation.CreateUsersList(utenti, xlsxPath);
+        Console.WriteLine("Foglio di calcolo creato in " + xlsxPath);
+    }
+    catch (Exception exc)
+    {
+        Console.WriteLine("Errore durante la creazione del foglio di calcolo: " + exc.Message);
+    }
+    Console.ReadKey();
+}
 
 void TestCreaDocxUtente()
 {
@@ -104,12 +126,14 @@ void TestCreaDocxUtente()
         Console.WriteLine(utente);
         try
         {
-            string docxPath = WordAutomation.CreateSingleUserDocx(utente, "Templates/contact.docx");
+            string templatePath = "Templates/contact.docx";
+            string docxPath = $"C:\\Dati\\Utente_{utente.Id}.docx";
+            WordAutomation.CreateSingleUserDocx(utente, templatePath, docxPath);
             Console.WriteLine("Documento creato in " + docxPath);
         }
-        catch (Exception)
+        catch (Exception exc)
         {
-            Console.WriteLine("Errore durante la creazione del documento");
+            Console.WriteLine("Errore durante la creazione del documento: " + exc.Message);
         }
     }
     Console.ReadKey();

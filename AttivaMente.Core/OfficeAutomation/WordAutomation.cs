@@ -7,7 +7,7 @@ namespace AttivaMente.Core.OfficeAutomation
 {
     public class WordAutomation
     {
-        public static string CreateSingleUserDocx(Utente utente, string templatePath)
+        public static void CreateSingleUserDocx(Utente utente, string templatePath, string docxPath)
         {
             var document = DocX.Load(templatePath);
 
@@ -18,10 +18,8 @@ namespace AttivaMente.Core.OfficeAutomation
             ReplaceSimpleTextInDocument(document, "{email}", utente.Email);
             // ReplaceSimpleTextInDocument(document, "{ruolo}", utente.Ruolo!.Nome);
 
-            string saveFilePath = $"{templatePath.Replace(".docx", "")}_{utente.Id}.docx";
-            document.SaveAs(saveFilePath);
-
-            return saveFilePath;
+            // string saveFilePath = $"{templatePath.Replace(".docx", "")}_{utente.Id}.docx";
+            document.SaveAs(docxPath);
         }
 
         private static void ReplaceSimpleTextInDocument(DocX document, string oldText, string? newText)
