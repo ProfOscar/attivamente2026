@@ -1,6 +1,8 @@
 ﻿using AttivaMente.Core.Models;
+using AttivaMente.Core.OfficeAutomation;
 using AttivaMente.Core.Security;
 using AttivaMente.Data;
+using System;
 
 string connStr = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Dati\\AttivaMenteDB.mdf;Integrated Security=True;Connect Timeout=30";
 
@@ -26,6 +28,7 @@ do
     Console.WriteLine("0) Cancellazione ruolo");
     Console.WriteLine("----------");
     Console.WriteLine("a) Test SQL injection");
+    Console.WriteLine("b) Test creazione docx utente");
     Console.WriteLine("----------");
     Console.WriteLine("q) ESCI");
 
@@ -68,6 +71,10 @@ do
         case 'A':
             TestSqlInjection();
             break;
+        case 'b':
+        case 'B':
+            TestCreaDocxUtente();
+            break;
         case 'q':
         case 'Q':
             break;
@@ -77,6 +84,36 @@ do
             break;
     }
 } while (scelta.ToString().ToLower() != "q");
+
+void TestCreaDocxUtente()
+{
+    Console.Clear();
+
+    int id;
+    do
+    {
+        Console.Write("Inserisci l'ID dell'utente di cui creare il docx: ");
+    }
+    while (!int.TryParse(Console.ReadLine(), out id));
+
+    Utente? utente = utenteRepository.GetById(id);
+    if (utente == null)
+        Console.WriteLine("Utente non trovato");
+    else
+    {
+        Console.WriteLine(utente);
+        try
+        {
+            string docxPath = WordAutomation.CreateSingleUserDocx(utente, "Templates/contact.docx");
+            Console.WriteLine("Documento creato in " + docxPath);
+        }
+        catch (Exception)
+        {
+            Console.WriteLine("Errore durante la creazione del documento");
+        }
+    }
+    Console.ReadKey();
+}
 
 void TestSqlInjection()
 {
