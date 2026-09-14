@@ -21,5 +21,10 @@ namespace AttivaMente.Web.Controllers
 
             return View(utenti);
         }
+
+        public IActionResult Help()
+        {
+            return View();
+        }
     }
 }
