@@ -14,6 +14,9 @@ namespace AttivaMente.Web.Controllers
 
         public IActionResult Index()
         {
+            // ViewData["subTitle"] = "- Homepage";
+            ViewBag.subTitle = "- Homepage";
+
             string connStr = _configuration.GetConnectionString("DefaultConnection")!;
 
             var utenteRepository = new UtenteRepository(connStr);
@@ -24,6 +27,7 @@ namespace AttivaMente.Web.Controllers
 
         public IActionResult Help()
         {
+            ViewData["subTitle"] = "- Help";
             return View();
         }
     }
