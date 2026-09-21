@@ -1,0 +1,21 @@
+﻿@using AttivaMente.Core.Models
+@model List<Ruolo>
+
+<h2>Ruoli disponibili</h2>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Ruolo</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.Nome</td>
+            </tr>
+        }
+    </tbody>
+</table>
