@@ -1,20 +1,21 @@
 ﻿@using AttivaMente.Core.Models
-@model List<Ruolo>
-
+@model List<AttivaMente.Core.Models.Ruolo>
 <h2>Ruoli disponibili</h2>
-<table>
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Ruolo</th>
-        </tr>
-    </thead>
+
+<a asp-action="Create" class="btn btn-primary mb-3">Aggiungi</a>
+
+<table class="table table-striped table-bordered">
+    <thead><tr><th>ID</th><th>Nome</th><th>Azioni</th></tr></thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var r in Model)
         {
             <tr>
-                <td>@item.Id</td>
-                <td>@item.Nome</td>
+                <td>@r.Id</td>
+                <td>@r.Nome</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@r.Id" class="btn btn-warning btn-sm">Modifica</a>
+                    <a asp-action="Delete" asp-route-id="@r.Id" class="btn btn-danger btn-sm">Elimina</a>
+                </td>
             </tr>
         }
     </tbody>
