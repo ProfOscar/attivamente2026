@@ -1,4 +1,5 @@
-﻿using AttivaMente.Data;
+﻿using AttivaMente.Core.Models;
+using AttivaMente.Data;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AttivaMente.Web.Controllers
@@ -17,6 +18,22 @@ namespace AttivaMente.Web.Controllers
             ViewBag.subTitle = "- Ruoli";
             var ruoli = _repo.GetAll();
             return View(ruoli);
+        }
+
+        public ActionResult Create() => View();
+
+        [HttpPost]
+        public ActionResult Create(Ruolo ruolo)
+        {
+            if (ModelState.IsValid)
+            {
+                _repo.Add(ruolo);
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View(ruolo);
+            }
         }
     }
 }
