@@ -13,7 +13,8 @@ namespace AttivaMente.Data
         public List<Utente> GetAll()
         {
             var utenti = new List<Utente>();
-            string query = "SELECT Id, Nome, Cognome, Email, PasswordHash, RuoloId FROM Utenti";
+            string query = @"SELECT u.Id, u.Nome, Cognome, Email, PasswordHash, RuoloId, r.Nome AS RuoloNome
+                             FROM Utenti u INNER JOIN Ruoli r ON u.RuoloId = r.Id";
 
             using var reader = _db.ExecuteReader(query);
             while (reader.Read())
@@ -25,7 +26,12 @@ namespace AttivaMente.Data
                     Cognome = reader.GetString(2),
                     Email = reader.GetString(3),
                     PasswordHash = reader.GetString(4),
-                    RuoloId = reader.GetInt32(5)
+                    RuoloId = reader.GetInt32(5),
+                    Ruolo = new Ruolo
+                    {
+                        Id = reader.GetInt32(5),
+                        Nome = reader.GetString(6)
+                    }
                 };
                 utenti.Add(utente);
             }
