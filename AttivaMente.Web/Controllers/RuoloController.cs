@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AttivaMente.Web.Controllers
 {
-    public class RuoloController: Controller
+    public class RuoloController : Controller
     {
         private readonly RuoloRepository _repo;
 
@@ -14,7 +14,8 @@ namespace AttivaMente.Web.Controllers
             _repo = new RuoloRepository(connStr);
         }
 
-        public ActionResult Index() {
+        public ActionResult Index()
+        {
             ViewBag.subTitle = "- Ruoli";
             var ruoli = _repo.GetAll();
             return View(ruoli);
@@ -34,6 +35,20 @@ namespace AttivaMente.Web.Controllers
             {
                 return View(ruolo);
             }
+        }
+
+        public ActionResult Delete(int id)
+        {
+            var ruolo = _repo.GetById(id);
+            if (ruolo == null) return NotFound();
+            return View(ruolo);
+        }
+
+        [HttpPost]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            _repo.Delete(id);
+            return RedirectToAction("Index");
         }
     }
 }
