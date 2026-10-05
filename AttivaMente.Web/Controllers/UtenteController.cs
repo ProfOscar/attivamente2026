@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace AttivaMente.Web.Controllers
 {
-    public class UtenteController: Controller
+    public class UtenteController : Controller
     {
         private readonly UtenteRepository _repoUtenti;
         private readonly RuoloRepository _repoRuoli;
@@ -25,7 +25,8 @@ namespace AttivaMente.Web.Controllers
             return View(utenti);
         }
 
-        public IActionResult Details(int id) {
+        public IActionResult Details(int id)
+        {
             ViewBag.subTitle = $"- Utente {id}";
             var utente = _repoUtenti.GetById(id);
             return View(utente);
@@ -41,7 +42,7 @@ namespace AttivaMente.Web.Controllers
         [HttpPost]
         public IActionResult Create(Utente utente, string password, string confermaPassword)
         {
-            if (password == confermaPassword && password.Length > 3)
+            if (password != null && confermaPassword != null && password.Length > 3 && password == confermaPassword)
             {
                 utente.PasswordHash = PasswordHelper.HashPassword(password);
                 if (ModelState.IsValid)
@@ -49,6 +50,10 @@ namespace AttivaMente.Web.Controllers
                     _repoUtenti.Add(utente);
                     return RedirectToAction("Index");
                 }
+            }
+            else
+            {
+                ModelState.AddModelError("Password", "Password non valida o le password non coincidono");
             }
             return View(utente);
         }

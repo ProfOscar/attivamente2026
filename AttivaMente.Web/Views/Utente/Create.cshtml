@@ -23,12 +23,13 @@
 
 	<div class="mb-3">
 		<label class="form-label">Password</label>
-		<input name="Password" type="password" class="form-control" />
+		<input asp-for="Password" name="Password" type="password" class="form-control" />
 	</div>
 	<div class="mb-3">
 		<label class="form-label">Conferma password</label>
 		<input name="ConfermaPassword" type="password" class="form-control" />
 	</div>
+	<span asp-validation-for="Password" class="text-danger"></span>
 
 	<div class="mb-3">
 		<label class="form-label">Ruolo</label>
