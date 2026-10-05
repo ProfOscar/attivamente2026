@@ -1,0 +1,21 @@
+﻿@using AttivaMente.Core.Models
+@model Utente
+
+<h2>Dettaglio utente</h2>
+
+<hr />
+
+<h4>Dati anagrafici</h4>
+<table class="table table-striped table-bordered">
+	<tbody>
+		<tr><th>ID</th><td>@Model.Id</td></tr>
+		<tr><th>Nome</th><td>@Model.Nome</td></tr>
+		<tr><th>Cognome</th><td>@Model.Cognome</td></tr>
+		<tr><th>Email</th><td>@Model.Email</td></tr>
+		<tr><th>Ruolo</th><td>@Model.RuoloId</td></tr>
+	</tbody>
+</table>
+
+<hr />
+
+<a asp-action="Index" class="btn btn-secondary">Torna all'elenco</a>

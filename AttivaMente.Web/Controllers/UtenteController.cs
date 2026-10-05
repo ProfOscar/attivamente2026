@@ -19,5 +19,11 @@ namespace AttivaMente.Web.Controllers
             var utenti = _repo.GetAll();
             return View(utenti);
         }
+
+        public IActionResult Details(int id) {
+            ViewBag.subTitle = $"- Utente {id}";
+            var utente = _repo.GetById(id);
+            return View(utente);
+        }
     }
 }
