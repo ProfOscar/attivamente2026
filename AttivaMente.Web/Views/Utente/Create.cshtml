@@ -31,8 +31,8 @@
 	</div>
 
 	<div class="mb-3">
-		<label asp-for="RuoloId" class="form-label"></label>
-		<input asp-for="RuoloId" class="form-control" />
+		<label class="form-label">Ruolo</label>
+		<select asp-for="RuoloId" asp-items="ViewBag.slRuoli" class="form-select"></select>
 		<span asp-validation-for="RuoloId" class="text-danger"></span>
 	</div>
 
