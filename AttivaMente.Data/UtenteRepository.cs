@@ -41,7 +41,9 @@ namespace AttivaMente.Data
 
         public Utente? GetById(int id)
         {
-            string query = $"SELECT Id, Nome, Cognome, Email, PasswordHash, RuoloId FROM Utenti WHERE Id = @p1";
+            string query = @"SELECT u.Id, u.Nome, Cognome, Email, PasswordHash, RuoloId, r.Nome AS RuoloNome
+                             FROM Utenti u INNER JOIN Ruoli r ON u.RuoloId = r.Id
+                             WHERE u.Id = @p1";
 
             using var reader = _db.ExecuteReader(query, id);
             if (reader.Read())
@@ -53,7 +55,12 @@ namespace AttivaMente.Data
                     Cognome = reader.GetString(2),
                     Email = reader.GetString(3),
                     PasswordHash = reader.GetString(4),
-                    RuoloId = reader.GetInt32(5)
+                    RuoloId = reader.GetInt32(5),
+                    Ruolo = new Ruolo
+                    {
+                        Id = reader.GetInt32(5),
+                        Nome = reader.GetString(6)
+                    }
                 };
                 return utente;
             }
