@@ -13,11 +13,13 @@ namespace AttivaMente.Core.Models
         [Required(ErrorMessage = "Il cognome è obbligatorio")]
         [StringLength(50)]
         public required string Cognome { get; set; }
-        
-        public string? Email { get; set; }
-        
+
+        [Required(ErrorMessage = "L'email è obbligatoria")]
+        [StringLength(50)]
+        public required string Email { get; set; }
+
         public string? PasswordHash { get; set; }
-        
+
         public int RuoloId { get; set; }
         public Ruolo? Ruolo { get; set; }
 

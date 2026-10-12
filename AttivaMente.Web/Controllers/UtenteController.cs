@@ -11,11 +11,14 @@ namespace AttivaMente.Web.Controllers
         private readonly UtenteRepository _repoUtenti;
         private readonly RuoloRepository _repoRuoli;
 
+        private readonly SelectList? _slRuoli;
+
         public UtenteController(IConfiguration config)
         {
             string connStr = config.GetConnectionString("DefaultConnection")!;
             _repoUtenti = new UtenteRepository(connStr);
             _repoRuoli = new RuoloRepository(connStr);
+            _slRuoli = new SelectList(_repoRuoli.GetAll(), "Id", "Nome");
         }
 
         public IActionResult Index()
@@ -34,8 +37,8 @@ namespace AttivaMente.Web.Controllers
 
         public IActionResult Create()
         {
-            SelectList slRuoli = new SelectList(_repoRuoli.GetAll(), "Id", "Nome");
-            ViewBag.slRuoli = slRuoli;
+            // Propongo la form in GET popolando il ViewBag per la combo dei ruoli
+            ViewBag.slRuoli = _slRuoli;
             return View();
         }
 
@@ -55,6 +58,8 @@ namespace AttivaMente.Web.Controllers
             {
                 ModelState.AddModelError("Password", "Password non valida o le password non coincidono");
             }
+            // Se qualcosa va storto ripropongo la form in GET ripopolando il ViewBag per la combo dei ruoli
+            ViewBag.slRuoli = _slRuoli;
             return View(utente);
         }
     }
