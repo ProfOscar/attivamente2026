@@ -75,5 +75,28 @@ namespace AttivaMente.Web.Controllers
             _repoUtenti.Delete(id);
             return RedirectToAction("Index");
         }
+
+        public IActionResult Edit(int id)
+        {
+            var utente = _repoUtenti.GetById(id);
+            if (utente == null) return NotFound();
+            ViewBag.slRuoli = _slRuoli;
+            return View(utente);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(Utente utente)
+        {
+            if (ModelState.IsValid)
+            {
+                var oldUtente = _repoUtenti.GetById(utente.Id);
+                if (oldUtente == null) return NotFound();
+                utente.PasswordHash = oldUtente.PasswordHash;
+                _repoUtenti.Update(utente, utente.Id);
+                return RedirectToAction("Index");
+            }
+            ViewBag.slRuoli = _slRuoli;
+            return View(utente);
+        }
     }
 }
