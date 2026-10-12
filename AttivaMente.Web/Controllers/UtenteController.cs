@@ -62,5 +62,18 @@ namespace AttivaMente.Web.Controllers
             ViewBag.slRuoli = _slRuoli;
             return View(utente);
         }
+
+        public IActionResult Delete(int id) {
+            var utente = _repoUtenti.GetById(id);
+            if (utente == null) return NotFound();
+            return View(utente);
+        }
+        
+        [HttpPost]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            _repoUtenti.Delete(id);
+            return RedirectToAction("Index");
+        }
     }
 }
