@@ -1,0 +1,14 @@
+﻿@model AttivaMente.Core.Models.Ruolo
+
+<h2>Modifica Ruolo</h2>
+
+<form asp-action="Edit" method="post">
+    <div class="mb-3">
+        <label asp-for="Nome" class="form-label"></label>
+        <input asp-for="Nome" class="form-control" required />
+        <span asp-validation-for="Nome" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Salva Modifiche</button>
+    <a asp-action="Index" class="btn btn-secondary">Annulla</a>
+</form>

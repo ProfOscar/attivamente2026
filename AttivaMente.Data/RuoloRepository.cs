@@ -76,7 +76,7 @@ namespace AttivaMente.Data
             catch (Exception exc)
             {
                 Console.WriteLine(exc.Message);
-                return false;
+                throw;
             }
         }
     }
