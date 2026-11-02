@@ -103,15 +103,29 @@ namespace AttivaMente.Web.Controllers
             return View(utente);
         }
 
-        public IActionResult Export(int id) {
+        public IActionResult ExportUserDocx(int id) {
             var utente = _repoUtenti.GetById(id);
             if (utente == null) return NotFound();
             byte[] fileBytes = WordAutomation.GetSingleUserDocxBytes(utente, _templatePath);
             return File(
                 fileBytes,
                 "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                $"contact_{id}.docx"
+                $"Utente_{id}.docx"
             );
         }
+
+        public IActionResult ExportUsersXlsx()
+        {
+            var utenti = _repoUtenti.GetAll();
+            if (utenti == null || utenti.Count == 0) return NotFound();
+
+            byte[] fileBytes = ExcelAutomation.GetUsersXlsxBytes(utenti);
+
+            return File(
+                    fileBytes,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    $"Utenti_{DateTime.Now:yyyyMMdd}.xlsx");
+        }
+
     }
 }
