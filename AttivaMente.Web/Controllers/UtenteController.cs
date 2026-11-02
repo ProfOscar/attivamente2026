@@ -1,4 +1,5 @@
 ﻿using AttivaMente.Core.Models;
+using AttivaMente.Core.OfficeAutomation;
 using AttivaMente.Core.Security;
 using AttivaMente.Data;
 using Microsoft.AspNetCore.Mvc;
@@ -13,12 +14,15 @@ namespace AttivaMente.Web.Controllers
 
         private readonly SelectList? _slRuoli;
 
+        private readonly string _templatePath;
+
         public UtenteController(IConfiguration config)
         {
             string connStr = config.GetConnectionString("DefaultConnection")!;
             _repoUtenti = new UtenteRepository(connStr);
             _repoRuoli = new RuoloRepository(connStr);
             _slRuoli = new SelectList(_repoRuoli.GetAll(), "Id", "Nome");
+            _templatePath = config["DocxTemplatePath"]!;
         }
 
         public IActionResult Index()
@@ -97,6 +101,17 @@ namespace AttivaMente.Web.Controllers
             }
             ViewBag.slRuoli = _slRuoli;
             return View(utente);
+        }
+
+        public IActionResult Export(int id) {
+            var utente = _repoUtenti.GetById(id);
+            if (utente == null) return NotFound();
+            byte[] fileBytes = WordAutomation.GetSingleUserDocxBytes(utente, _templatePath);
+            return File(
+                fileBytes,
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                $"contact_{id}.docx"
+            );
         }
     }
 }

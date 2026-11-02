@@ -7,15 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BCrypt.Net-Next" Version="4.1.0" />
-    <PackageReference Include="DocX" Version="5.0.0" />
-    <PackageReference Include="EPPlus" Version="8.6.0" />
+    <None Remove="Templates\contact.docx" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Templates\contact.docx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <Content Include="Templates\contact.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.1.0" />
+    <PackageReference Include="DocX" Version="5.0.0" />
+    <PackageReference Include="EPPlus" Version="8.6.0" />
   </ItemGroup>
 
 </Project>

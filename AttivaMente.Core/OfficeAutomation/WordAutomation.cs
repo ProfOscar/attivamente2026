@@ -9,17 +9,24 @@ namespace AttivaMente.Core.OfficeAutomation
     {
         public static void CreateSingleUserDocx(Utente utente, string templatePath, string docxPath)
         {
-            var document = DocX.Load(templatePath);
+            byte[] bytes = GetSingleUserDocxBytes(utente, templatePath);
+            File.WriteAllBytes(docxPath, bytes);
+        }
+
+        public static byte[] GetSingleUserDocxBytes(Utente utente, string templatePath)
+        {
+            using var memoryStream = new MemoryStream();
+            using var document = DocX.Load(templatePath);
 
             ReplaceSimpleTextInDocument(document, "{nome}", utente.Nome);
             ReplaceSimpleTextInDocument(document, "{cognome}", utente.Cognome);
             // ReplaceSimpleTextInDocument(document, "{tel1}", utente.Tel1);
             // ReplaceSimpleTextInDocument(document, "{tel2}", utente.Tel2);
             ReplaceSimpleTextInDocument(document, "{email}", utente.Email);
-            // ReplaceSimpleTextInDocument(document, "{ruolo}", utente.Ruolo!.Nome);
+            ReplaceSimpleTextInDocument(document, "{ruolo}", utente.Ruolo!.Nome);
 
-            // string saveFilePath = $"{templatePath.Replace(".docx", "")}_{utente.Id}.docx";
-            document.SaveAs(docxPath);
+            document.SaveAs(memoryStream);
+            return memoryStream.ToArray();
         }
 
         private static void ReplaceSimpleTextInDocument(DocX document, string oldText, string? newText)
