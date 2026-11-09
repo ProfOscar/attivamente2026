@@ -48,7 +48,7 @@ namespace AttivaMente.Core.OfficeAutomation
                 ws.Cells[row, 2].Value = utente.Nome;
                 ws.Cells[row, 3].Value = utente.Cognome;
                 ws.Cells[row, 4].Value = utente.Email;
-                // ws.Cells[row, 5].Value = utente.Ruolo!.Nome;
+                ws.Cells[row, 5].Value = utente.Ruolo!.Nome;
                 row++;
             }
             // larghezza colonne automatica
