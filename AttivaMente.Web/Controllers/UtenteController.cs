@@ -25,10 +25,13 @@ namespace AttivaMente.Web.Controllers
             _templatePath = config["DocxTemplatePath"]!;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string? searchTerm)
         {
             ViewBag.subTitle = "- Utenti";
-            var utenti = _repoUtenti.GetAll();
+            ViewBag.SearchTerm = searchTerm;
+            var utenti = string.IsNullOrWhiteSpace(searchTerm)
+               ? _repoUtenti.GetAll()
+               : _repoUtenti.Search(searchTerm);
             return View(utenti);
         }
 
@@ -118,9 +121,7 @@ namespace AttivaMente.Web.Controllers
         {
             var utenti = _repoUtenti.GetAll();
             if (utenti == null || utenti.Count == 0) return NotFound();
-
             byte[] fileBytes = ExcelAutomation.GetUsersXlsxBytes(utenti);
-
             return File(
                     fileBytes,
                     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",

@@ -1,4 +1,6 @@
 ﻿using AttivaMente.Core.Models;
+using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace AttivaMente.Data
 {
@@ -6,7 +8,8 @@ namespace AttivaMente.Data
     {
         private readonly Database _db;
 
-        public UtenteRepository(string connectionString) {
+        public UtenteRepository(string connectionString)
+        {
             _db = new Database(connectionString);
         }
 
@@ -19,20 +22,7 @@ namespace AttivaMente.Data
             using var reader = _db.ExecuteReader(query);
             while (reader.Read())
             {
-                var utente = new Utente
-                {
-                    Id = reader.GetInt32(0),
-                    Nome = reader.GetString(1),
-                    Cognome = reader.GetString(2),
-                    Email = reader.GetString(3),
-                    PasswordHash = reader.GetString(4),
-                    RuoloId = reader.GetInt32(5),
-                    Ruolo = new Ruolo
-                    {
-                        Id = reader.GetInt32(5),
-                        Nome = reader.GetString(6)
-                    }
-                };
+                var utente = MapUtente(reader);
                 utenti.Add(utente);
             }
 
@@ -48,20 +38,7 @@ namespace AttivaMente.Data
             using var reader = _db.ExecuteReader(query, id);
             if (reader.Read())
             {
-                var utente = new Utente
-                {
-                    Id = reader.GetInt32(0),
-                    Nome = reader.GetString(1),
-                    Cognome = reader.GetString(2),
-                    Email = reader.GetString(3),
-                    PasswordHash = reader.GetString(4),
-                    RuoloId = reader.GetInt32(5),
-                    Ruolo = new Ruolo
-                    {
-                        Id = reader.GetInt32(5),
-                        Nome = reader.GetString(6)
-                    }
-                };
+                var utente = MapUtente(reader);
                 return utente;
             }
 
@@ -70,25 +47,39 @@ namespace AttivaMente.Data
 
         public Utente? GetByEmail(string email)
         {
-            string query = $"SELECT Id, Nome, Cognome, Email, PasswordHash, RuoloId FROM Utenti WHERE Email = @p1";
+            string query = @"SELECT u.Id, u.Nome, Cognome, Email, PasswordHash, RuoloId, r.Nome AS RuoloNome
+                             FROM Utenti u INNER JOIN Ruoli r ON u.RuoloId = r.Id
+                             WHERE Email = @p1";
 
             using var reader = _db.ExecuteReader(query, email);
             if (reader.Read())
             {
-                var utente = new Utente
-                {
-                    Id = reader.GetInt32(0),
-                    Nome = reader.GetString(1),
-                    Cognome = reader.GetString(2),
-                    Email = reader.GetString(3),
-                    PasswordHash = reader.GetString(4),
-                    RuoloId = reader.GetInt32(5)
-                };
+                var utente = MapUtente(reader);
                 return utente;
             }
 
             return null;
         }
+
+        public List<Utente> Search(string searchTerm)
+        {
+            var utenti = new List<Utente>();
+            var pattern = $"%{searchTerm}%";
+
+            string query = @"SELECT u.Id, u.Nome, u.Cognome, u.Email, u.PasswordHash, u.RuoloId, r.Nome AS RuoloNome
+                             FROM Utenti u 
+                             INNER JOIN Ruoli r ON u.RuoloId = r.Id
+                             WHERE u.Nome LIKE @p1 OR u.Cognome LIKE @p1 OR u.Email LIKE @p1";
+
+            using var reader = _db.ExecuteReader(query, pattern);
+            while (reader.Read())
+            {
+                utenti.Add(MapUtente(reader));
+            }
+
+            return utenti;
+        }
+
 
         public bool Add(Utente u)
         {
@@ -110,6 +101,24 @@ namespace AttivaMente.Data
         {
             string sql = $"DELETE FROM Utenti WHERE Id = @p1";
             return CallExecuteNonQuery(sql, id);
+        }
+
+        private static Utente MapUtente(IDataRecord record)
+        {
+            return new Utente
+            {
+                Id = record.GetInt32(0),
+                Nome = record.GetString(1),
+                Cognome = record.GetString(2),
+                Email = record.GetString(3),
+                PasswordHash = record.IsDBNull(4) ? "" : record.GetString(4),
+                RuoloId = record.GetInt32(5),
+                Ruolo = new Ruolo
+                {
+                    Id = record.GetInt32(5),
+                    Nome = record.GetString(6)
+                }
+            };
         }
 
         private bool CallExecuteNonQuery(string sql, params object[] parameters)
