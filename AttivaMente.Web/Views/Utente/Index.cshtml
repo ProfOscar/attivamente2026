@@ -5,14 +5,33 @@
 
 <div class="d-flex gap-2 align-items-start flex-wrap mb-3">
 	<a class="btn btn-primary mb-3" asp-action="Create">Aggiungi</a>
-	<a class="btn btn-primary mb-3" asp-action="ExportUsersXlsx" asp-route-searchTerm="@ViewBag.SearchTerm">
+	<a class="btn btn-primary mb-3" asp-action="ExportUsersXlsx" 
+		asp-route-searchTerm="@ViewBag.searchTerm"
+		asp-route-ruoloFilter="@ViewBag.ruoloFilter">
 		Scarica XLSX
 	</a>
+
 	<form method="get" asp-action="Index" class="d-flex ms-auto">
+		<select name="ruoloFilter" class="form-select me-3" onchange="this.form.submit()">
+			<option value="0">Tutti i ruoli</option>
+			@foreach (var item in (SelectList)ViewBag.slRuoli)
+			{
+				var isSelected = ViewBag.ruoloFilter == int.Parse(@item.Value);
+				<option value="@item.Value" selected="@isSelected">
+					@item.Text
+				</option>
+			}
+		</select>
 		<input type="text" name="searchTerm" class="form-control me-2"
 			   placeholder="Cerca per Nome, Cognome, eMail, Ruolo"
-			   value="@ViewBag.SearchTerm" />
+			   value="@ViewBag.searchTerm" />
 		<button type="submit" class="btn btn-primary">Cerca</button>
+		@if (ViewBag.ruoloFilter != 0 || !string.IsNullOrWhiteSpace(ViewBag.searchTerm))
+		{
+			<a asp-action="Index" class="btn btn-outline-secondary ms-1" title="Rimuovi filtri" aria-label="Rimuovi filtri">
+				<i class="bi bi-x-lg"></i>
+			</a>
+		}
 	</form>
 </div>
 

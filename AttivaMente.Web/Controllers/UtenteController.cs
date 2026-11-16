@@ -25,13 +25,15 @@ namespace AttivaMente.Web.Controllers
             _templatePath = config["DocxTemplatePath"]!;
         }
 
-        public IActionResult Index(string? searchTerm)
+        public IActionResult Index(string? searchTerm, int ruoloFilter)
         {
             ViewBag.subTitle = "- Utenti";
-            ViewBag.SearchTerm = searchTerm;
-            var utenti = string.IsNullOrWhiteSpace(searchTerm)
+            ViewBag.searchTerm = searchTerm;
+            ViewBag.slRuoli = _slRuoli;
+            ViewBag.ruoloFilter = ruoloFilter;
+            var utenti = string.IsNullOrWhiteSpace(searchTerm) && ruoloFilter == 0
                ? _repoUtenti.GetAll()
-               : _repoUtenti.Search(searchTerm);
+               : _repoUtenti.Search(searchTerm, ruoloFilter);
             return View(utenti);
         }
 
@@ -117,11 +119,11 @@ namespace AttivaMente.Web.Controllers
             );
         }
 
-        public IActionResult ExportUsersXlsx(string? searchTerm)
+        public IActionResult ExportUsersXlsx(string? searchTerm, int ruoloFilter)
         {
-            var utenti = string.IsNullOrWhiteSpace(searchTerm)
+            var utenti = string.IsNullOrWhiteSpace(searchTerm) && ruoloFilter == 0
                ? _repoUtenti.GetAll()
-               : _repoUtenti.Search(searchTerm);
+               : _repoUtenti.Search(searchTerm, ruoloFilter);
             if (utenti == null || utenti.Count == 0) return NotFound();
             byte[] fileBytes = ExcelAutomation.GetUsersXlsxBytes(utenti);
             return File(
