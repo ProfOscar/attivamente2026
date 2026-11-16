@@ -71,8 +71,7 @@ namespace AttivaMente.Data
                              INNER JOIN Ruoli r ON u.RuoloId = r.Id
                              WHERE u.Nome LIKE @p1 OR u.Cognome LIKE @p1 OR u.Email LIKE @p1";
 
-            var parameters = new[] { new SqlParameter("@p1", pattern) };
-            using var reader = _db.ExecuteReader(query, parameters);
+            using var reader = _db.ExecuteReader(query, pattern);
             while (reader.Read())
             {
                 utenti.Add(MapUtente(reader));
