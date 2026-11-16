@@ -117,9 +117,11 @@ namespace AttivaMente.Web.Controllers
             );
         }
 
-        public IActionResult ExportUsersXlsx()
+        public IActionResult ExportUsersXlsx(string? searchTerm)
         {
-            var utenti = _repoUtenti.GetAll();
+            var utenti = string.IsNullOrWhiteSpace(searchTerm)
+               ? _repoUtenti.GetAll()
+               : _repoUtenti.Search(searchTerm);
             if (utenti == null || utenti.Count == 0) return NotFound();
             byte[] fileBytes = ExcelAutomation.GetUsersXlsxBytes(utenti);
             return File(

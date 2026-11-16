@@ -69,7 +69,7 @@ namespace AttivaMente.Data
             string query = @"SELECT u.Id, u.Nome, u.Cognome, u.Email, u.PasswordHash, u.RuoloId, r.Nome AS RuoloNome
                              FROM Utenti u 
                              INNER JOIN Ruoli r ON u.RuoloId = r.Id
-                             WHERE u.Nome LIKE @p1 OR u.Cognome LIKE @p1 OR u.Email LIKE @p1";
+                             WHERE u.Nome LIKE @p1 OR u.Cognome LIKE @p1 OR u.Email LIKE @p1 OR r.Nome LIKE @p1";
 
             using var reader = _db.ExecuteReader(query, pattern);
             while (reader.Read())
