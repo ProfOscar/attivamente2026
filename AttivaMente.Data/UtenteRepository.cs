@@ -1,5 +1,4 @@
 ﻿using AttivaMente.Core.Models;
-using Microsoft.Data.SqlClient;
 using System.Data;
 
 namespace AttivaMente.Data
@@ -61,7 +60,7 @@ namespace AttivaMente.Data
             return null;
         }
 
-        public List<Utente> Search(string? searchTerm, int ruoloFilter)
+        public List<Utente> Search(string? searchTerm, int ruoloFilter, string? orderBy, string? direction)
         {
             var utenti = new List<Utente>();
             var pattern = $"%{searchTerm}%";
@@ -71,14 +70,34 @@ namespace AttivaMente.Data
                              INNER JOIN Ruoli r ON u.RuoloId = r.Id
                              WHERE (1=1)";
 
+            // --- ricerca e filtri ---
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
                 query += " AND (u.Nome LIKE @p1 OR u.Cognome LIKE @p1 OR u.Email LIKE @p1 OR r.Nome LIKE @p1)";
             }
-
             if (ruoloFilter > 0) {
                 query += " AND (u.RuoloId = @p2)";
             }
+
+            // --- ordinamento principale ---
+            string sortColumns = orderBy?.ToLower() switch
+            {
+                "id" => "u.Id",
+                "nome" => "u.Nome",
+                "cognome" => "u.Cognome",
+                "email" => "u.Email",
+                "ruolo" => "r.Nome",
+                _ => "u.Cognome"
+            };
+
+            // --- direzione ordinamento principale ---
+            string sortDirection = (direction?.ToLower() == "desc") ? "DESC" : "ASC";
+
+            query += $" ORDER BY {sortColumns} {sortDirection}";
+
+            // --- ordinamento secondario fisso ---
+            if (sortColumns != "u.Cognome") query += ", u.Cognome ASC";
+            if (sortColumns != "u.Nome") query += ", u.Nome ASC";
 
             using var reader = _db.ExecuteReader(query, pattern, ruoloFilter);
             while (reader.Read())

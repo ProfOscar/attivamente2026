@@ -17,12 +17,8 @@ namespace AttivaMente.Web.Controllers
             // ViewData["subTitle"] = "- Homepage";
             ViewBag.subTitle = "- Homepage";
 
-            string connStr = _configuration.GetConnectionString("DefaultConnection")!;
-
-            var utenteRepository = new UtenteRepository(connStr);
-            var utenti = utenteRepository.GetAll();
-
-            return View(utenti);
+            //return View();
+            return Redirect("Utente");
         }
 
         public IActionResult Help()
